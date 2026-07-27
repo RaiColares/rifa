@@ -55,6 +55,7 @@ function doPost(e) {
   if (action === 'reservar') return reservarNumero(e);
   if (action === 'login') return adminLogin(e);
   if (action === 'atualizar') return adminAtualizar(e);
+  if (action === 'cancelar') return cancelarReserva(e);
   return respErro('Acao invalida');
 }
 
@@ -114,6 +115,23 @@ function reservarNumero(e) {
         pixKey: config.pix_key || '01648448216',
         pixName: config.pix_nome || 'Aline Peres'
       });
+    }
+  }
+  return respErro('Numero nao encontrado');
+}
+
+function cancelarReserva(e) {
+  var num = Number(e.parameter.n);
+  var sheet = getSheet();
+  var data = sheet.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (Number(data[i][0]) === num) {
+      if (data[i][1] !== 'Reservado') {
+        return respErro('Numero nao esta reservado');
+      }
+      sheet.getRange(i + 1, 2).setValue('Disponivel');
+      sheet.getRange(i + 1, 5).setValue('');
+      return respSucesso({ numero: num });
     }
   }
   return respErro('Numero nao encontrado');
