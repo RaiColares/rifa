@@ -2,7 +2,7 @@
 // URL do seu Web App do Google Apps Script
 // Apos implantar o Apps Script, cole a URL aqui:
 // =====================================================
-var URL_BASE = '';
+var URL_BASE = 'https://script.google.com/macros/s/AKfycbxxyKVmnx3rtoHVd4WUMCwu-qd5PcALIhZuV6M0FsKyiComnKPrGhpKYI3EG2mraJsw/exec';
 
 // =====================================================
 
