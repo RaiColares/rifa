@@ -1,30 +1,24 @@
 // =====================================================
 // RIFA ONLINE - Google Apps Script
 // =====================================================
-// INSTRUCOES DE INSTALACAO:
-// 1. Crie uma planilha no Google Sheets
-// 2. No menu Extensoes > Apps Script, cole este codigo
-// 3. Crie os arquivos Index.html e Admin.html no Apps Script
-// 4. Execute a funcao "configurarPlanilha()" uma vez
-// 5. Implante > Nova implantacao > Aplicativo web
-// 6. Execute como "Eu", acesso "Qualquer pessoa"
+// INSTRUCOES:
+// 1. Cole este codigo em Extensions > Apps Script
+// 2. Execute a funcao "configurarPlanilha()" uma vez
+// 3. Implante > Nova implantacao > Aplicativo web
+// 4. Execute como "Eu", acesso "Qualquer pessoa"
 // =====================================================
 
-function onOpen() {
-  SpreadsheetApp.getUi()
-    .createMenu('Rifa')
-    .addItem('Configurar planilha', 'configurarPlanilha')
-    .addToUi();
+var ID_PLANILHA = '1TWgrSKUfxWXnYkEV0pcXsndq7fdZO0CvYrQomcKE9UA';
+
+function getApp() {
+  return SpreadsheetApp.openById(ID_PLANILHA);
 }
 
 function configurarPlanilha() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = getApp();
 
-  // Aba Numeros
   var abaNum = ss.getSheetByName('Numeros');
-  if (!abaNum) {
-    abaNum = ss.insertSheet('Numeros');
-  }
+  if (!abaNum) { abaNum = ss.insertSheet('Numeros'); }
   abaNum.clear();
   var cabecalho = ['Numero', 'Status', 'Nome', 'Pago', 'ReservadoEm', 'Telefone'];
   var linhas = [cabecalho];
@@ -34,11 +28,8 @@ function configurarPlanilha() {
   abaNum.getRange(1, 1, 101, 6).setValues(linhas);
   abaNum.getRange(1, 1, 1, 6).setFontWeight('bold');
 
-  // Aba Config
   var abaCfg = ss.getSheetByName('Config');
-  if (!abaCfg) {
-    abaCfg = ss.insertSheet('Config');
-  }
+  if (!abaCfg) { abaCfg = ss.insertSheet('Config'); }
   abaCfg.clear();
   abaCfg.getRange(1, 1, 4, 2).setValues([
     ['pix_key', '01648448216'],
@@ -48,54 +39,39 @@ function configurarPlanilha() {
   ]);
   abaCfg.getRange(1, 1, 1, 2).setFontWeight('bold');
 
-  SpreadsheetApp.getUi().alert('Planilha configurada com sucesso!');
+  ss.toast('Planilha configurada com sucesso!');
 }
 
 function doGet(e) {
   var acao = e.parameter.a || '';
-  var path = e.parameter.p || '';
-
   if (acao === 'listar') {
     return responderJSON(getNumeros());
   }
-
-  if (path === 'admin') {
-    return HtmlService.createHtmlOutputFromFile('Admin')
-      .setTitle('Rifa Online - Admin')
-      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
-  }
-
-  return HtmlService.createHtmlOutputFromFile('Index')
-    .setTitle('Rifa Online')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+  return ContentService.createTextOutput('OK');
 }
 
 function doPost(e) {
   var action = e.parameter.a || '';
-
   if (action === 'reservar') return reservarNumero(e);
   if (action === 'login') return adminLogin(e);
   if (action === 'atualizar') return adminAtualizar(e);
-
   return respErro('Acao invalida');
 }
 
 // ====================== DADOS ======================
 
 function getSheet() {
-  return SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Numeros');
+  return getApp().getSheetByName('Numeros');
 }
 
 function getConfigSheet() {
-  return SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Config');
+  return getApp().getSheetByName('Config');
 }
 
 function getNumeros() {
   var sheet = getSheet();
   var data = sheet.getDataRange().getValues();
   var nums = [];
-
   for (var i = 1; i < data.length; i++) {
     nums.push({
       numero: Number(data[i][0]),
@@ -106,7 +82,6 @@ function getNumeros() {
       telefone: data[i][5] || ''
     });
   }
-
   return nums;
 }
 
@@ -126,7 +101,6 @@ function reservarNumero(e) {
   var num = Number(e.parameter.n);
   var sheet = getSheet();
   var data = sheet.getDataRange().getValues();
-
   for (var i = 1; i < data.length; i++) {
     if (Number(data[i][0]) === num) {
       if (data[i][1] !== 'Disponivel') {
@@ -134,7 +108,6 @@ function reservarNumero(e) {
       }
       sheet.getRange(i + 1, 2).setValue('Reservado');
       sheet.getRange(i + 1, 5).setValue(new Date().toISOString());
-
       var config = getConfig();
       return respSucesso({
         numero: num,
@@ -143,7 +116,6 @@ function reservarNumero(e) {
       });
     }
   }
-
   return respErro('Numero nao encontrado');
 }
 
@@ -151,12 +123,10 @@ function adminLogin(e) {
   var config = getConfig();
   var user = config.admin_user || 'admin';
   var pass = config.admin_pass || 'admin123';
-
   if (e.parameter.u === user && e.parameter.s === pass) {
     var token = 'token_' + new Date().getTime() + '_' + Math.random().toString(36).slice(2, 8);
     return respSucesso({ token: token });
   }
-
   return respErro('Credenciais invalidas');
 }
 
@@ -164,11 +134,9 @@ function adminAtualizar(e) {
   if (!e.parameter.tk || e.parameter.tk.indexOf('token_') !== 0) {
     return respErro('Nao autenticado');
   }
-
   var num = Number(e.parameter.n);
   var sheet = getSheet();
   var data = sheet.getDataRange().getValues();
-
   for (var i = 1; i < data.length; i++) {
     if (Number(data[i][0]) === num) {
       sheet.getRange(i + 1, 2).setValue(e.parameter.st || data[i][1]);
@@ -179,7 +147,6 @@ function adminAtualizar(e) {
       return respSucesso({});
     }
   }
-
   return respErro('Numero nao encontrado');
 }
 
