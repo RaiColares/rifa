@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin - Rifa Online</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="admin-page">
+
+<div id="telaLogin" class="login-box">
+  <h1>Painel Administrativo</h1>
+  <form id="formLogin">
+    <div class="form-group">
+      <label for="username">Usuario</label>
+      <input type="text" id="username" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Senha</label>
+      <input type="password" id="password" required>
+    </div>
+    <div id="erroLogin" class="erro hidden"></div>
+    <button type="submit" class="btn-primary">Entrar</button>
+  </form>
+  <a href="index.html" class="voltar">Voltar para pagina principal</a>
+</div>
+
+<div id="telaDashboard" class="container hidden">
+  <div class="admin-header">
+    <h1>Painel Administrativo</h1>
+    <button onclick="sair()" class="btn-sair">Sair</button>
+  </div>
+
+  <div class="controles">
+    <input type="number" id="buscaNum" placeholder="Buscar numero..." min="1" max="100">
+    <button onclick="buscar()" class="btn-buscar">Buscar</button>
+    <select id="filtroStatus" onchange="filtrar()">
+      <option value="all">Todos</option>
+      <option value="Disponivel">Disponiveis</option>
+      <option value="Reservado">Reservados</option>
+      <option value="Indisponivel">Indisponiveis</option>
+    </select>
+    <button onclick="limparFiltro()" class="btn-limpar">Limpar</button>
+  </div>
+
+  <div class="grid" id="gridAdmin"></div>
+
+  <div class="stats">
+    <p>Disponiveis: <span id="contDisp">0</span></p>
+    <p>Reservados: <span id="contReserv">0</span></p>
+    <p>Indisponiveis: <span id="contIndisp">0</span></p>
+    <p>Pagos: <span id="contPago">0</span></p>
+  </div>
+</div>
+
+<div class="modal" id="modalEditar">
+  <div class="modal-content">
+    <span class="fechar" onclick="fecharModal()">&times;</span>
+    <h2>Editar Numero <span id="editNum"></span></h2>
+    <form id="formEditar">
+      <div class="form-group">
+        <label>Nome do Comprador</label>
+        <input type="text" id="editNome" placeholder="Nome completo">
+      </div>
+      <div class="form-group">
+        <label>Telefone / WhatsApp</label>
+        <input type="text" id="editTel" placeholder="(11) 99999-9999">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="editStatus">
+          <option value="Disponivel">Disponivel</option>
+          <option value="Reservado">Reservado</option>
+          <option value="Indisponivel">Indisponivel</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Pago</label>
+        <select id="editPago">
+          <option value="Nao">Nao</option>
+          <option value="Sim">Sim</option>
+        </select>
+      </div>
+      <div id="erroEditar" class="erro hidden"></div>
+      <div class="form-actions">
+        <button type="submit" class="btn-salvar">Salvar</button>
+        <button type="button" onclick="fecharModal()" class="btn-cancelar">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/admin.js"></script>
+</body>
+</html>

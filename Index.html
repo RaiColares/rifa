@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rifa Online</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Rifa Online</h1>
+    <p>Escolha seu numero da sorte!</p>
+  </header>
+
+  <div class="pix-banner">
+    <p><strong>Chave PIX:</strong> <span class="pix-key">01648448216</span></p>
+    <p><strong>Beneficiario:</strong> Aline Peres</p>
+    <button onclick="copiarChave()" class="btn-copy">Copiar Chave PIX</button>
+  </div>
+
+  <div class="info-bar">Clique em um numero disponivel para reservar</div>
+
+  <div class="grid" id="gridNumeros"></div>
+
+  <div class="legend">
+    <span class="legend-item available">Disponivel</span>
+    <span class="legend-item reserved">Reservado</span>
+    <span class="legend-item unavailable">Indisponivel</span>
+    <span class="legend-item paid-legend">Pago</span>
+  </div>
+</div>
+
+<div class="admin-link">
+  <a href="admin.html">Painel Administrativo</a>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
