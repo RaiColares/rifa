@@ -165,3 +165,4 @@ function cancelarReserva(num) {
 }
 
 carregarNumeros();
+setInterval(carregarNumeros, 60000);

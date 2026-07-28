@@ -172,7 +172,11 @@ header h1{
   cursor:pointer;
   position:relative;
   border:1px solid rgba(255,255,255,0.25);
-  transition:opacity 0.2s,transform 0.15s
+  transition:opacity 0.2s,transform 0.15s;
+  border-radius:50%;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none
 }
 
 .grid-item.available{
@@ -511,6 +515,11 @@ body.admin-page{
   position:relative;
   animation:fadeIn 0.2s;
   border-top:4px solid #2e4a35
+}
+
+@media(max-width:600px){
+  .grid{grid-template-columns:repeat(5,1fr);gap:6px;padding:5px}
+  .grid-item{font-size:.9em}
 }
 
 @keyframes fadeIn{
